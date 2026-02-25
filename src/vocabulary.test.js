@@ -6,11 +6,11 @@ describe('VocabularyDeck', () => {
 
   beforeEach(() => {
     deck = new VocabularyDeck([
-      { word: 'ability', definition: 'the power or skill to do something', example: 'She has the ability to learn quickly.' },
-      { word: 'accept', definition: 'agree to receive or take something', example: 'Please accept my apology.' },
-      { word: 'account', definition: 'a record of money received and spent', example: 'I checked my bank account.' },
-      { word: 'achieve', definition: 'to succeed in doing something difficult', example: 'She worked hard to achieve her goal.' },
-      { word: 'action', definition: 'the process of doing something', example: 'It is time for action.' },
+      { word: 'ability', phonetic: '/ə\'bɪlɪtɪ/', definitions: ['n. 能力，才能'], forms: 'ability(10)', totalCount: 10, paperCount: 8, inList: true },
+      { word: 'accept', phonetic: '/ək\'sept/', definitions: ['v. 接受，认可'], forms: 'accept(8)', totalCount: 8, paperCount: 7, inList: true },
+      { word: 'account', phonetic: '/ə\'kaʊnt/', definitions: ['n. 账户，描述', 'v. 说明，解释'], forms: 'account(6)', totalCount: 6, paperCount: 6, inList: true },
+      { word: 'achieve', phonetic: '/ə\'tʃiːv/', definitions: ['v. 完成，达到'], forms: 'achieve(5)', totalCount: 5, paperCount: 5, inList: true },
+      { word: 'action', phonetic: '/\'ækʃən/', definitions: ['n. 行动，行为'], forms: 'action(9)', totalCount: 9, paperCount: 7, inList: true },
     ])
   })
 
@@ -29,11 +29,12 @@ describe('VocabularyDeck', () => {
   })
 
   describe('getNextCard()', () => {
-    it('returns a card object with word, definition, and example', () => {
+    it('returns a card object with word, phonetic, and definitions', () => {
       const card = deck.getNextCard()
       expect(card).toHaveProperty('word')
-      expect(card).toHaveProperty('definition')
-      expect(card).toHaveProperty('example')
+      expect(card).toHaveProperty('phonetic')
+      expect(card).toHaveProperty('definitions')
+      expect(Array.isArray(card.definitions)).toBe(true)
     })
 
     it('returns null when all cards are known', () => {

@@ -1,32 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vocab — High-Frequency English</title>
+  <title>土妹高考词汇 4509</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #f8f7f4;
+      --bg: #f5f4f0;
       --surface: #ffffff;
-      --border: #e8e4de;
+      --border: #e2ddd6;
       --text-primary: #1a1a1a;
-      --text-secondary: #6b6560;
-      --text-muted: #a09890;
-      --accent: #2d6a4f;
-      --accent-light: #e8f4ed;
+      --text-secondary: #5a554e;
+      --text-muted: #9e978e;
+      --word-color: #628E39;
+      --phonetic-color: #FF9C2D;
+      --accent: #628E39;
+      --accent-light: #eaf3e1;
       --danger: #c0392b;
       --danger-light: #fdf0ee;
-      --known: #2d6a4f;
-      --unknown: #c0392b;
-      --progress-track: #e8e4de;
-      --radius: 12px;
-      --shadow: 0 2px 16px rgba(0,0,0,0.07);
+      --radius: 14px;
+      --shadow: 0 4px 24px rgba(0,0,0,0.08);
     }
 
     body {
-      font-family: 'Georgia', 'Times New Roman', serif;
+      font-family: 'Helvetica Neue', Arial, 'PingFang SC', 'Microsoft YaHei', sans-serif;
       background: var(--bg);
       color: var(--text-primary);
       min-height: 100vh;
@@ -38,44 +37,51 @@
     /* ── Header ── */
     header {
       width: 100%;
-      padding: 1.5rem 2rem;
+      padding: 1rem 2rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid var(--border);
       background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .logo {
-      font-size: 1.1rem;
-      font-weight: bold;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--word-color);
+      letter-spacing: 0.02em;
+    }
+    .logo span { color: var(--text-muted); font-weight: 400; }
+
+    #header-stat {
+      font-size: 0.8rem;
+      color: var(--text-muted);
       letter-spacing: 0.04em;
-      color: var(--accent);
     }
 
-    .logo span { color: var(--text-secondary); font-weight: normal; }
-
-    /* ── Progress bar ── */
+    /* ── Progress ── */
     .progress-wrap {
       width: 100%;
-      max-width: 640px;
-      padding: 2rem 1rem 0;
+      max-width: 700px;
+      padding: 1.5rem 1rem 0;
     }
 
-    .progress-label {
+    .progress-row {
       display: flex;
       justify-content: space-between;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      margin-bottom: 0.5rem;
-      letter-spacing: 0.06em;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
     }
 
     .progress-bar {
-      height: 6px;
-      background: var(--progress-track);
+      height: 5px;
+      background: var(--border);
       border-radius: 99px;
       overflow: hidden;
     }
@@ -87,75 +93,136 @@
       transition: width 0.4s ease;
     }
 
-    /* ── Main card area ── */
+    /* ── Main ── */
     main {
       width: 100%;
-      max-width: 640px;
-      padding: 2rem 1rem 3rem;
-      flex: 1;
+      max-width: 700px;
+      padding: 1.5rem 1rem 3rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
 
-    /* ── Flashcard ── */
+    /* ── Flash card ── */
     .card {
       width: 100%;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 3rem 2.5rem 2.5rem;
-      text-align: center;
-      min-height: 320px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 1.25rem;
-      position: relative;
-      transition: opacity 0.2s;
+      overflow: hidden;
+      transition: opacity 0.18s, transform 0.18s;
     }
 
-    .card.flipping { opacity: 0; transform: scale(0.98); }
+    .card.flipping { opacity: 0; transform: scale(0.985); }
 
-    .card-counter {
+    /* ── Card header (word + phonetic) ── */
+    .card-head {
+      padding: 2.2rem 2.5rem 1.6rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+      position: relative;
+    }
+
+    .card-number {
       position: absolute;
-      top: 1.25rem;
-      right: 1.5rem;
-      font-size: 0.75rem;
+      top: 1rem;
+      right: 1.25rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
     }
 
     .card-word {
-      font-size: 2.6rem;
-      font-weight: bold;
-      color: var(--text-primary);
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--word-color);
       letter-spacing: -0.01em;
-      line-height: 1.1;
+      line-height: 1;
+      font-family: Georgia, 'Times New Roman', serif;
     }
 
-    .card-definition {
-      font-size: 1.05rem;
-      color: var(--text-secondary);
-      line-height: 1.65;
-      max-width: 480px;
-    }
-
-    .card-example {
+    .card-phonetic {
+      font-size: 1.15rem;
       font-style: italic;
-      font-size: 0.95rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-      border-left: 3px solid var(--border);
-      text-align: left;
-      padding-left: 1rem;
-      max-width: 480px;
-      width: 100%;
+      color: var(--phonetic-color);
+      letter-spacing: 0.02em;
     }
+
+    /* ── Card body (definitions + stats, hidden until revealed) ── */
+    .card-body {
+      padding: 1.5rem 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .card-body.hidden { display: none; }
+
+    .definitions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .def-line {
+      font-size: 1.1rem;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    /* ── Stats grid ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 0.5rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.1rem;
+    }
+
+    .stat-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .stat-label {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      line-height: 1.3;
+    }
+
+    .stat-value {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .stat-value.in-list-yes { color: var(--word-color); }
+    .stat-value.in-list-no  { color: var(--danger); }
+
+    /* ── Reveal prompt ── */
+    .reveal-hint {
+      padding: 1.1rem 2.5rem;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      border-top: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .reveal-hint:hover { background: #fafaf8; }
+    .reveal-hint.hidden { display: none; }
 
     /* ── Buttons ── */
     .btn-row {
@@ -166,36 +233,34 @@
 
     .btn {
       flex: 1;
-      padding: 0.9rem 1rem;
+      padding: 0.85rem 1rem;
       border: none;
       border-radius: var(--radius);
-      font-size: 0.95rem;
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      font-weight: 600;
+      font-size: 0.92rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: transform 0.1s, box-shadow 0.1s, background 0.15s;
+      transition: background 0.15s, transform 0.1s;
       letter-spacing: 0.01em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
     }
 
     .btn:active { transform: scale(0.97); }
 
-    .btn-unknown {
-      background: var(--danger-light);
-      color: var(--danger);
-    }
+    .btn-unknown { background: var(--danger-light); color: var(--danger); }
     .btn-unknown:hover { background: #f9dbd8; }
 
-    .btn-known {
-      background: var(--accent-light);
-      color: var(--accent);
-    }
-    .btn-known:hover { background: #d4eddf; }
+    .btn-known { background: var(--accent-light); color: var(--accent); }
+    .btn-known:hover { background: #d8edca; }
+
+    .btn-row.locked .btn { opacity: 0.35; pointer-events: none; }
 
     /* ── Shortcut hint ── */
     .shortcut-hint {
-      font-size: 0.75rem;
+      font-size: 0.73rem;
       color: var(--text-muted);
-      font-family: 'Helvetica Neue', Arial, sans-serif;
       letter-spacing: 0.04em;
     }
 
@@ -205,11 +270,22 @@
       border: 1px solid var(--border);
       border-radius: 4px;
       padding: 0.1em 0.4em;
-      font-size: 0.7rem;
-      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.68rem;
     }
 
-    /* ── Completion screen ── */
+    /* ── Summary stats ── */
+    .summary {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .sum-item { display: flex; flex-direction: column; align-items: center; gap: 0.15rem; }
+    .sum-num { font-size: 1.6rem; font-weight: 800; }
+    .sum-num.known   { color: var(--accent); }
+    .sum-num.unknown { color: var(--danger); }
+    .sum-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+
+    /* ── Complete screen ── */
     .complete-screen {
       width: 100%;
       background: var(--surface);
@@ -221,90 +297,43 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1.25rem;
+      gap: 1rem;
     }
 
-    .complete-icon {
-      font-size: 3rem;
-      line-height: 1;
-    }
-
-    .complete-title {
-      font-size: 1.9rem;
-      font-weight: bold;
-    }
-
-    .complete-sub {
-      color: var(--text-secondary);
-      font-size: 1rem;
-      line-height: 1.6;
-      max-width: 380px;
-    }
+    .complete-icon { font-size: 2.8rem; }
+    .complete-title { font-size: 1.8rem; font-weight: 800; color: var(--word-color); }
+    .complete-sub { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; max-width: 360px; }
 
     .btn-reset {
       margin-top: 0.5rem;
-      padding: 0.85rem 2.5rem;
+      padding: 0.8rem 2.2rem;
       background: var(--accent);
       color: #fff;
       border: none;
       border-radius: var(--radius);
-      font-size: 0.95rem;
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      font-weight: 600;
+      font-size: 0.92rem;
+      font-weight: 700;
       cursor: pointer;
-      letter-spacing: 0.02em;
       transition: background 0.15s, transform 0.1s;
     }
-
-    .btn-reset:hover { background: #235c42; }
+    .btn-reset:hover { background: #4e7230; }
     .btn-reset:active { transform: scale(0.97); }
 
-    /* ── Stats row ── */
-    .stats {
-      display: flex;
-      gap: 1.5rem;
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-    }
-
-    .stat {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.2rem;
-    }
-
-    .stat-num {
-      font-size: 1.8rem;
-      font-weight: bold;
-    }
-
-    .stat-num.known { color: var(--known); }
-    .stat-num.unknown { color: var(--unknown); }
-
-    .stat-label {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.07em;
-      color: var(--text-muted);
-    }
-
-    /* ── Word list sidebar toggle ── */
-    .word-list-toggle {
+    /* ── Word list toggle ── */
+    .word-list-wrap {
       width: 100%;
-      max-width: 640px;
-      padding: 0 1rem;
-      margin-bottom: 1rem;
+      max-width: 700px;
+      padding: 0 1rem 2rem;
     }
 
     .btn-toggle {
+      width: 100%;
       background: none;
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 0.6rem 1rem;
-      width: 100%;
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      font-size: 0.82rem;
-      color: var(--text-secondary);
+      padding: 0.55rem 1rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
       cursor: pointer;
       letter-spacing: 0.04em;
       transition: background 0.15s;
@@ -312,42 +341,39 @@
     .btn-toggle:hover { background: var(--border); }
 
     .word-list {
-      margin-top: 0.75rem;
       display: none;
+      margin-top: 0.6rem;
       border: 1px solid var(--border);
       border-radius: var(--radius);
       background: var(--surface);
-      padding: 1rem 1.25rem;
-      max-height: 220px;
+      padding: 0.75rem 1rem;
+      max-height: 200px;
       overflow-y: auto;
-      column-count: 3;
-      column-gap: 1rem;
+      column-count: 5;
+      column-gap: 0.5rem;
     }
-
     .word-list.open { display: block; }
 
     .word-chip {
-      font-size: 0.8rem;
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      padding: 0.15rem 0;
+      font-size: 0.75rem;
+      padding: 0.1rem 0;
       color: var(--text-muted);
       break-inside: avoid;
     }
-
-    .word-chip.known { color: var(--known); font-weight: 600; }
+    .word-chip.known { color: var(--accent); font-weight: 700; }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">Vocab<span> · High-Frequency English</span></div>
-  <div id="header-progress" style="font-family:'Helvetica Neue',Arial,sans-serif; font-size:0.82rem; color:var(--text-muted)"></div>
+  <div class="logo">土妹高考词汇<span> · 4509词</span></div>
+  <div id="header-stat"></div>
 </header>
 
 <div class="progress-wrap">
-  <div class="progress-label">
-    <span>Progress</span>
-    <span id="progress-text">0 / 100</span>
+  <div class="progress-row">
+    <span>学习进度</span>
+    <span id="progress-text">0 / 4509</span>
   </div>
   <div class="progress-bar">
     <div class="progress-fill" id="progress-fill" style="width:0%"></div>
@@ -357,43 +383,66 @@
 <main>
   <!-- Flashcard -->
   <div class="card" id="card">
-    <div class="card-counter" id="card-counter"></div>
-    <div class="card-word" id="card-word">Loading…</div>
-    <div class="card-definition" id="card-definition"></div>
-    <div class="card-example" id="card-example"></div>
+    <div class="card-head">
+      <div class="card-number" id="card-number"></div>
+      <div class="card-word"   id="card-word">Loading…</div>
+      <div class="card-phonetic" id="card-phonetic"></div>
+    </div>
+
+    <!-- Reveal hint shown before answer -->
+    <div class="reveal-hint" id="reveal-hint">按 <kbd>Space</kbd> 或点击查看释义</div>
+
+    <!-- Definitions + stats, hidden until revealed -->
+    <div class="card-body hidden" id="card-body">
+      <div class="definitions" id="card-defs"></div>
+      <div class="stats-grid">
+        <div class="stat-cell">
+          <div class="stat-label">主要形式</div>
+          <div class="stat-value" id="stat-forms" title=""></div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-label">高考出现次数</div>
+          <div class="stat-value" id="stat-total"></div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-label">涉及试卷数</div>
+          <div class="stat-value" id="stat-papers"></div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-label">高考3500</div>
+          <div class="stat-value" id="stat-inlist"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Action buttons -->
-  <div class="btn-row" id="btn-row">
-    <button class="btn btn-unknown" id="btn-unknown" title="Still learning (←)">
-      ✗ &nbsp;Still Learning
-    </button>
-    <button class="btn btn-known" id="btn-known" title="I know this (→)">
-      ✓ &nbsp;I Know It
-    </button>
+  <div class="btn-row locked" id="btn-row">
+    <button class="btn btn-unknown" id="btn-unknown">✗ &nbsp;还不会</button>
+    <button class="btn btn-known"   id="btn-known">✓ &nbsp;已掌握</button>
   </div>
 
-  <!-- Keyboard hint -->
   <div class="shortcut-hint">
-    <kbd>←</kbd> Still Learning &nbsp;&nbsp; <kbd>→</kbd> I Know It &nbsp;&nbsp; <kbd>R</kbd> Reset
+    <kbd>Space</kbd> 查看释义 &nbsp;·&nbsp;
+    <kbd>←</kbd> 还不会 &nbsp;·&nbsp;
+    <kbd>→</kbd> 已掌握 &nbsp;·&nbsp;
+    <kbd>R</kbd> 重置
   </div>
 
-  <!-- Stats -->
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-num known" id="stat-known">0</div>
-      <div class="stat-label">Known</div>
+  <div class="summary">
+    <div class="sum-item">
+      <div class="sum-num known" id="sum-known">0</div>
+      <div class="sum-label">已掌握</div>
     </div>
-    <div class="stat">
-      <div class="stat-num unknown" id="stat-unknown">100</div>
-      <div class="stat-label">Remaining</div>
+    <div class="sum-item">
+      <div class="sum-num unknown" id="sum-unknown">4509</div>
+      <div class="sum-label">待学习</div>
     </div>
   </div>
 </main>
 
-<!-- Word list -->
-<div class="word-list-toggle">
-  <button class="btn-toggle" id="btn-toggle-list">▾ &nbsp;Show all 100 words</button>
+<div class="word-list-wrap">
+  <button class="btn-toggle" id="btn-toggle-list">▾ &nbsp;展开单词列表</button>
   <div class="word-list" id="word-list"></div>
 </div>
 
@@ -404,63 +453,90 @@ import { VocabularyDeck } from './src/vocabulary.js'
 const deck = new VocabularyDeck(HIGH_FREQUENCY_WORDS)
 
 // ── DOM refs ──
-const cardEl         = document.getElementById('card')
-let wordEl           = document.getElementById('card-word')
-let defEl            = document.getElementById('card-definition')
-let exEl             = document.getElementById('card-example')
-let counterEl        = document.getElementById('card-counter')
+const cardEl        = document.getElementById('card')
+let   wordEl        = document.getElementById('card-word')
+let   phoneticEl    = document.getElementById('card-phonetic')
+let   defsEl        = document.getElementById('card-defs')
+let   cardNumberEl  = document.getElementById('card-number')
+let   cardBodyEl    = document.getElementById('card-body')
+let   revealHintEl  = document.getElementById('reveal-hint')
+let   statFormsEl   = document.getElementById('stat-forms')
+let   statTotalEl   = document.getElementById('stat-total')
+let   statPapersEl  = document.getElementById('stat-papers')
+let   statInListEl  = document.getElementById('stat-inlist')
+const progressFill  = document.getElementById('progress-fill')
+const progressText  = document.getElementById('progress-text')
+const headerStat    = document.getElementById('header-stat')
+const sumKnown      = document.getElementById('sum-known')
+const sumUnknown    = document.getElementById('sum-unknown')
+const btnKnown      = document.getElementById('btn-known')
+const btnUnknown    = document.getElementById('btn-unknown')
+const btnRow        = document.getElementById('btn-row')
+const wordList      = document.getElementById('word-list')
+const btnToggleList = document.getElementById('btn-toggle-list')
 
-// The card currently shown on screen. Only showCard() may advance the deck.
+const SAVE_KEY = 'vocab-gaokao-known'
+
+// ── State ──
 let currentCard = null
-const progressFill   = document.getElementById('progress-fill')
-const progressText   = document.getElementById('progress-text')
-const headerProgress = document.getElementById('header-progress')
-const statKnown      = document.getElementById('stat-known')
-const statUnknown    = document.getElementById('stat-unknown')
-const btnKnown       = document.getElementById('btn-known')
-const btnUnknown     = document.getElementById('btn-unknown')
-const btnRow         = document.getElementById('btn-row')
-const wordList       = document.getElementById('word-list')
-const btnToggleList  = document.getElementById('btn-toggle-list')
+let revealed    = false
 
-// ── Restore saved state from localStorage ──
-const SAVE_KEY = 'vocab-known-words'
+// ── Restore saved progress ──
 const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '[]')
 saved.forEach(w => deck.markKnown(w))
 
-// ── Render the word list sidebar ──
-function renderWordList() {
-  const progress = deck.getProgress()
-  wordList.innerHTML = HIGH_FREQUENCY_WORDS.map(w => {
-    const known = progress.known > 0 && deck._known.has(w.word)
-    return `<div class="word-chip ${known ? 'known' : ''}">${known ? '✓ ' : ''}${w.word}</div>`
-  }).join('')
+// ── Reveal answer ──
+function reveal() {
+  if (revealed || !currentCard) return
+  revealed = true
+  cardBodyEl.classList.remove('hidden')
+  revealHintEl.classList.add('hidden')
+  btnRow.classList.remove('locked')
 }
 
-// ── Render a card ──
+// ── Show next card ──
 function showCard() {
-  if (deck.isComplete()) {
-    showComplete()
-    return
-  }
+  if (deck.isComplete()) { showComplete(); return }
+
+  revealed = false
   currentCard = deck.getNextCard()
-  const card = currentCard
+  const c = currentCard
   const { known, unknown, total, percent } = deck.getProgress()
 
   cardEl.classList.add('flipping')
   setTimeout(() => {
-    wordEl.textContent = card.word
-    defEl.textContent = card.definition
-    exEl.textContent = `"${card.example}"`
-    counterEl.textContent = `${known} / ${total}`
-    cardEl.classList.remove('flipping')
-  }, 150)
+    // Word + phonetic
+    wordEl.textContent     = c.word
+    phoneticEl.textContent = c.phonetic
+    cardNumberEl.textContent = known + ' / ' + total
 
+    // Definitions
+    defsEl.innerHTML = c.definitions.map(d =>
+      '<div class="def-line">' + escHtml(d) + '</div>'
+    ).join('')
+
+    // Stats
+    statFormsEl.textContent = c.forms || '—'
+    statFormsEl.title       = c.forms || ''
+    statTotalEl.textContent = c.totalCount
+    statPapersEl.textContent = c.paperCount + ' 套'
+    statInListEl.textContent = c.inList ? '✓ 是' : '✗ 否'
+    statInListEl.className   = 'stat-value ' + (c.inList ? 'in-list-yes' : 'in-list-no')
+
+    // Reset reveal state
+    cardBodyEl.classList.add('hidden')
+    revealHintEl.classList.remove('hidden')
+    btnRow.classList.add('locked')
+
+    cardEl.classList.remove('flipping')
+  }, 160)
+
+  // Update progress UI immediately (outside animation)
   progressFill.style.width = percent + '%'
-  progressText.textContent = `${known} / ${total}`
-  headerProgress.textContent = `${percent}% complete`
-  statKnown.textContent = known
-  statUnknown.textContent = unknown
+  progressText.textContent = known + ' / ' + total
+  headerStat.textContent   = percent + '% 已掌握'
+  sumKnown.textContent     = known
+  sumUnknown.textContent   = unknown
 
   renderWordList()
 }
@@ -468,36 +544,32 @@ function showCard() {
 // ── Completion screen ──
 function showComplete() {
   const { total } = deck.getProgress()
-  cardEl.innerHTML = `
-    <div class="complete-screen">
-      <div class="complete-icon">✦</div>
-      <div class="complete-title">All ${total} words learned!</div>
-      <div class="complete-sub">
-        You've worked through every high-frequency word in this deck.
-        Reset to review again from the beginning.
-      </div>
-      <button class="btn-reset" id="btn-reset-inner">Reset &amp; Start Over</button>
-    </div>
-  `
+  cardEl.innerHTML =
+    '<div class="complete-screen">' +
+      '<div class="complete-icon">✦</div>' +
+      '<div class="complete-title">全部 ' + total + ' 词已掌握！</div>' +
+      '<div class="complete-sub">你已完成土妹高考词汇 4509 词的全部学习。可以重置后重新复习。</div>' +
+      '<button class="btn-reset" id="btn-reset-inner">重置，重新开始</button>' +
+    '</div>'
   btnRow.style.display = 'none'
   document.getElementById('btn-reset-inner').addEventListener('click', resetDeck)
   progressFill.style.width = '100%'
-  progressText.textContent = `${total} / ${total}`
-  headerProgress.textContent = '100% complete'
-  statKnown.textContent = total
-  statUnknown.textContent = 0
+  progressText.textContent = total + ' / ' + total
+  headerStat.textContent   = '100% 已掌握'
+  sumKnown.textContent     = total
+  sumUnknown.textContent   = 0
 }
 
 // ── Actions ──
 function markKnown() {
-  if (!currentCard) return
+  if (!revealed || !currentCard) return
   deck.markKnown(currentCard.word)
   saveProgress()
   showCard()
 }
 
 function markUnknown() {
-  if (!currentCard) return
+  if (!revealed || !currentCard) return
   deck.markUnknown(currentCard.word)
   showCard()
 }
@@ -505,41 +577,81 @@ function markUnknown() {
 function resetDeck() {
   deck.reset()
   localStorage.removeItem(SAVE_KEY)
-  // Restore card UI in case we replaced it
-  cardEl.innerHTML = `
-    <div class="card-counter" id="card-counter"></div>
-    <div class="card-word" id="card-word"></div>
-    <div class="card-definition" id="card-definition"></div>
-    <div class="card-example" id="card-example"></div>
-  `
-  // Re-bind module-scoped DOM refs to the newly created elements
-  wordEl    = document.getElementById('card-word')
-  defEl     = document.getElementById('card-definition')
-  exEl      = document.getElementById('card-example')
-  counterEl = document.getElementById('card-counter')
+  // Rebuild card HTML
+  cardEl.innerHTML =
+    '<div class="card-head">' +
+      '<div class="card-number" id="card-number"></div>' +
+      '<div class="card-word"    id="card-word"></div>' +
+      '<div class="card-phonetic" id="card-phonetic"></div>' +
+    '</div>' +
+    '<div class="reveal-hint" id="reveal-hint">按 <kbd>Space</kbd> 或点击查看释义</div>' +
+    '<div class="card-body hidden" id="card-body">' +
+      '<div class="definitions" id="card-defs"></div>' +
+      '<div class="stats-grid">' +
+        '<div class="stat-cell"><div class="stat-label">主要形式</div><div class="stat-value" id="stat-forms"></div></div>' +
+        '<div class="stat-cell"><div class="stat-label">高考出现次数</div><div class="stat-value" id="stat-total"></div></div>' +
+        '<div class="stat-cell"><div class="stat-label">涉及试卷数</div><div class="stat-value" id="stat-papers"></div></div>' +
+        '<div class="stat-cell"><div class="stat-label">高考3500</div><div class="stat-value" id="stat-inlist"></div></div>' +
+      '</div>' +
+    '</div>'
+
+  // Re-bind refs
+  wordEl       = document.getElementById('card-word')
+  phoneticEl   = document.getElementById('card-phonetic')
+  defsEl       = document.getElementById('card-defs')
+  cardNumberEl = document.getElementById('card-number')
+  cardBodyEl   = document.getElementById('card-body')
+  revealHintEl = document.getElementById('reveal-hint')
+  statFormsEl  = document.getElementById('stat-forms')
+  statTotalEl  = document.getElementById('stat-total')
+  statPapersEl = document.getElementById('stat-papers')
+  statInListEl = document.getElementById('stat-inlist')
+
+  // Re-attach reveal hint click
+  revealHintEl.addEventListener('click', reveal)
+
   currentCard = null
+  revealed    = false
   btnRow.style.display = 'flex'
+  btnRow.classList.add('locked')
   showCard()
 }
 
-// ── Persist known words ──
+// ── Persist ──
 function saveProgress() {
   localStorage.setItem(SAVE_KEY, JSON.stringify([...deck._known]))
 }
 
+// ── Word list ──
+function renderWordList() {
+  if (!wordList.classList.contains('open')) return
+  const knownSet = deck._known
+  wordList.innerHTML = HIGH_FREQUENCY_WORDS.map(w =>
+    '<div class="word-chip ' + (knownSet.has(w.word) ? 'known' : '') + '">' +
+      (knownSet.has(w.word) ? '✓ ' : '') + escHtml(w.word) +
+    '</div>'
+  ).join('')
+}
+
+function escHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
 // ── Events ──
+revealHintEl.addEventListener('click', reveal)
 btnKnown.addEventListener('click', markKnown)
 btnUnknown.addEventListener('click', markUnknown)
 
 btnToggleList.addEventListener('click', () => {
   wordList.classList.toggle('open')
   btnToggleList.textContent = wordList.classList.contains('open')
-    ? '▴ \u00a0Hide word list'
-    : '▾ \u00a0Show all 100 words'
-  if (wordList.classList.contains('open')) renderWordList()
+    ? '▴ \u00a0收起单词列表'
+    : '▾ \u00a0展开单词列表'
+  renderWordList()
 })
 
 document.addEventListener('keydown', e => {
+  if (e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); reveal() }
   if (e.key === 'ArrowRight') markKnown()
   if (e.key === 'ArrowLeft')  markUnknown()
   if (e.key === 'r' || e.key === 'R') resetDeck()
