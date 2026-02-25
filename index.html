@@ -405,10 +405,13 @@ const deck = new VocabularyDeck(HIGH_FREQUENCY_WORDS)
 
 // ── DOM refs ──
 const cardEl         = document.getElementById('card')
-const wordEl         = document.getElementById('card-word')
-const defEl          = document.getElementById('card-definition')
-const exEl           = document.getElementById('card-example')
-const counterEl      = document.getElementById('card-counter')
+let wordEl           = document.getElementById('card-word')
+let defEl            = document.getElementById('card-definition')
+let exEl             = document.getElementById('card-example')
+let counterEl        = document.getElementById('card-counter')
+
+// The card currently shown on screen. Only showCard() may advance the deck.
+let currentCard = null
 const progressFill   = document.getElementById('progress-fill')
 const progressText   = document.getElementById('progress-text')
 const headerProgress = document.getElementById('header-progress')
@@ -440,7 +443,8 @@ function showCard() {
     showComplete()
     return
   }
-  const card = deck.getNextCard()
+  currentCard = deck.getNextCard()
+  const card = currentCard
   const { known, unknown, total, percent } = deck.getProgress()
 
   cardEl.classList.add('flipping')
@@ -486,17 +490,15 @@ function showComplete() {
 
 // ── Actions ──
 function markKnown() {
-  const card = deck.getNextCard()
-  if (!card) return
-  deck.markKnown(card.word)
+  if (!currentCard) return
+  deck.markKnown(currentCard.word)
   saveProgress()
   showCard()
 }
 
 function markUnknown() {
-  const card = deck.getNextCard()
-  if (!card) return
-  deck.markUnknown(card.word)
+  if (!currentCard) return
+  deck.markUnknown(currentCard.word)
   showCard()
 }
 
@@ -510,15 +512,13 @@ function resetDeck() {
     <div class="card-definition" id="card-definition"></div>
     <div class="card-example" id="card-example"></div>
   `
-  // Re-bind DOM refs after re-render
+  // Re-bind module-scoped DOM refs to the newly created elements
+  wordEl    = document.getElementById('card-word')
+  defEl     = document.getElementById('card-definition')
+  exEl      = document.getElementById('card-example')
+  counterEl = document.getElementById('card-counter')
+  currentCard = null
   btnRow.style.display = 'flex'
-  // Re-assign after DOM replacement
-  Object.assign(window, {
-    cardCounter: document.getElementById('card-counter'),
-    cardWord:    document.getElementById('card-word'),
-    cardDef:     document.getElementById('card-definition'),
-    cardEx:      document.getElementById('card-example'),
-  })
   showCard()
 }
 
