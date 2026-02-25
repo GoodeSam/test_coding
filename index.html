@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vocab — High-Frequency English</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f8f7f4;
+      --surface: #ffffff;
+      --border: #e8e4de;
+      --text-primary: #1a1a1a;
+      --text-secondary: #6b6560;
+      --text-muted: #a09890;
+      --accent: #2d6a4f;
+      --accent-light: #e8f4ed;
+      --danger: #c0392b;
+      --danger-light: #fdf0ee;
+      --known: #2d6a4f;
+      --unknown: #c0392b;
+      --progress-track: #e8e4de;
+      --radius: 12px;
+      --shadow: 0 2px 16px rgba(0,0,0,0.07);
+    }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Header ── */
+    header {
+      width: 100%;
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .logo {
+      font-size: 1.1rem;
+      font-weight: bold;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+    }
+
+    .logo span { color: var(--text-secondary); font-weight: normal; }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      width: 100%;
+      max-width: 640px;
+      padding: 2rem 1rem 0;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: var(--progress-track);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+
+    /* ── Main card area ── */
+    main {
+      width: 100%;
+      max-width: 640px;
+      padding: 2rem 1rem 3rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    /* ── Flashcard ── */
+    .card {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 3rem 2.5rem 2.5rem;
+      text-align: center;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.25rem;
+      position: relative;
+      transition: opacity 0.2s;
+    }
+
+    .card.flipping { opacity: 0; transform: scale(0.98); }
+
+    .card-counter {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.5rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      letter-spacing: 0.04em;
+    }
+
+    .card-word {
+      font-size: 2.6rem;
+      font-weight: bold;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+
+    .card-definition {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      max-width: 480px;
+    }
+
+    .card-example {
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      border-left: 3px solid var(--border);
+      text-align: left;
+      padding-left: 1rem;
+      max-width: 480px;
+      width: 100%;
+    }
+
+    /* ── Buttons ── */
+    .btn-row {
+      display: flex;
+      gap: 0.75rem;
+      width: 100%;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 0.9rem 1rem;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s, background 0.15s;
+      letter-spacing: 0.01em;
+    }
+
+    .btn:active { transform: scale(0.97); }
+
+    .btn-unknown {
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+    .btn-unknown:hover { background: #f9dbd8; }
+
+    .btn-known {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+    .btn-known:hover { background: #d4eddf; }
+
+    /* ── Shortcut hint ── */
+    .shortcut-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      letter-spacing: 0.04em;
+    }
+
+    kbd {
+      display: inline-block;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.1em 0.4em;
+      font-size: 0.7rem;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    /* ── Completion screen ── */
+    .complete-screen {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 3.5rem 2.5rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .complete-icon {
+      font-size: 3rem;
+      line-height: 1;
+    }
+
+    .complete-title {
+      font-size: 1.9rem;
+      font-weight: bold;
+    }
+
+    .complete-sub {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 380px;
+    }
+
+    .btn-reset {
+      margin-top: 0.5rem;
+      padding: 0.85rem 2.5rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .btn-reset:hover { background: #235c42; }
+    .btn-reset:active { transform: scale(0.97); }
+
+    /* ── Stats row ── */
+    .stats {
+      display: flex;
+      gap: 1.5rem;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+    }
+
+    .stat-num {
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    .stat-num.known { color: var(--known); }
+    .stat-num.unknown { color: var(--unknown); }
+
+    .stat-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+    }
+
+    /* ── Word list sidebar toggle ── */
+    .word-list-toggle {
+      width: 100%;
+      max-width: 640px;
+      padding: 0 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.6rem 1rem;
+      width: 100%;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: background 0.15s;
+    }
+    .btn-toggle:hover { background: var(--border); }
+
+    .word-list {
+      margin-top: 0.75rem;
+      display: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 1rem 1.25rem;
+      max-height: 220px;
+      overflow-y: auto;
+      column-count: 3;
+      column-gap: 1rem;
+    }
+
+    .word-list.open { display: block; }
+
+    .word-chip {
+      font-size: 0.8rem;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      padding: 0.15rem 0;
+      color: var(--text-muted);
+      break-inside: avoid;
+    }
+
+    .word-chip.known { color: var(--known); font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Vocab<span> · High-Frequency English</span></div>
+  <div id="header-progress" style="font-family:'Helvetica Neue',Arial,sans-serif; font-size:0.82rem; color:var(--text-muted)"></div>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-label">
+    <span>Progress</span>
+    <span id="progress-text">0 / 100</span>
+  </div>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+  </div>
+</div>
+
+<main>
+  <!-- Flashcard -->
+  <div class="card" id="card">
+    <div class="card-counter" id="card-counter"></div>
+    <div class="card-word" id="card-word">Loading…</div>
+    <div class="card-definition" id="card-definition"></div>
+    <div class="card-example" id="card-example"></div>
+  </div>
+
+  <!-- Action buttons -->
+  <div class="btn-row" id="btn-row">
+    <button class="btn btn-unknown" id="btn-unknown" title="Still learning (←)">
+      ✗ &nbsp;Still Learning
+    </button>
+    <button class="btn btn-known" id="btn-known" title="I know this (→)">
+      ✓ &nbsp;I Know It
+    </button>
+  </div>
+
+  <!-- Keyboard hint -->
+  <div class="shortcut-hint">
+    <kbd>←</kbd> Still Learning &nbsp;&nbsp; <kbd>→</kbd> I Know It &nbsp;&nbsp; <kbd>R</kbd> Reset
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num known" id="stat-known">0</div>
+      <div class="stat-label">Known</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num unknown" id="stat-unknown">100</div>
+      <div class="stat-label">Remaining</div>
+    </div>
+  </div>
+</main>
+
+<!-- Word list -->
+<div class="word-list-toggle">
+  <button class="btn-toggle" id="btn-toggle-list">▾ &nbsp;Show all 100 words</button>
+  <div class="word-list" id="word-list"></div>
+</div>
+
+<script type="module">
+import { HIGH_FREQUENCY_WORDS } from './src/words.js'
+import { VocabularyDeck } from './src/vocabulary.js'
+
+const deck = new VocabularyDeck(HIGH_FREQUENCY_WORDS)
+
+// ── DOM refs ──
+const cardEl         = document.getElementById('card')
+const wordEl         = document.getElementById('card-word')
+const defEl          = document.getElementById('card-definition')
+const exEl           = document.getElementById('card-example')
+const counterEl      = document.getElementById('card-counter')
+const progressFill   = document.getElementById('progress-fill')
+const progressText   = document.getElementById('progress-text')
+const headerProgress = document.getElementById('header-progress')
+const statKnown      = document.getElementById('stat-known')
+const statUnknown    = document.getElementById('stat-unknown')
+const btnKnown       = document.getElementById('btn-known')
+const btnUnknown     = document.getElementById('btn-unknown')
+const btnRow         = document.getElementById('btn-row')
+const wordList       = document.getElementById('word-list')
+const btnToggleList  = document.getElementById('btn-toggle-list')
+
+// ── Restore saved state from localStorage ──
+const SAVE_KEY = 'vocab-known-words'
+const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || '[]')
+saved.forEach(w => deck.markKnown(w))
+
+// ── Render the word list sidebar ──
+function renderWordList() {
+  const progress = deck.getProgress()
+  wordList.innerHTML = HIGH_FREQUENCY_WORDS.map(w => {
+    const known = progress.known > 0 && deck._known.has(w.word)
+    return `<div class="word-chip ${known ? 'known' : ''}">${known ? '✓ ' : ''}${w.word}</div>`
+  }).join('')
+}
+
+// ── Render a card ──
+function showCard() {
+  if (deck.isComplete()) {
+    showComplete()
+    return
+  }
+  const card = deck.getNextCard()
+  const { known, unknown, total, percent } = deck.getProgress()
+
+  cardEl.classList.add('flipping')
+  setTimeout(() => {
+    wordEl.textContent = card.word
+    defEl.textContent = card.definition
+    exEl.textContent = `"${card.example}"`
+    counterEl.textContent = `${known} / ${total}`
+    cardEl.classList.remove('flipping')
+  }, 150)
+
+  progressFill.style.width = percent + '%'
+  progressText.textContent = `${known} / ${total}`
+  headerProgress.textContent = `${percent}% complete`
+  statKnown.textContent = known
+  statUnknown.textContent = unknown
+
+  renderWordList()
+}
+
+// ── Completion screen ──
+function showComplete() {
+  const { total } = deck.getProgress()
+  cardEl.innerHTML = `
+    <div class="complete-screen">
+      <div class="complete-icon">✦</div>
+      <div class="complete-title">All ${total} words learned!</div>
+      <div class="complete-sub">
+        You've worked through every high-frequency word in this deck.
+        Reset to review again from the beginning.
+      </div>
+      <button class="btn-reset" id="btn-reset-inner">Reset &amp; Start Over</button>
+    </div>
+  `
+  btnRow.style.display = 'none'
+  document.getElementById('btn-reset-inner').addEventListener('click', resetDeck)
+  progressFill.style.width = '100%'
+  progressText.textContent = `${total} / ${total}`
+  headerProgress.textContent = '100% complete'
+  statKnown.textContent = total
+  statUnknown.textContent = 0
+}
+
+// ── Actions ──
+function markKnown() {
+  const card = deck.getNextCard()
+  if (!card) return
+  deck.markKnown(card.word)
+  saveProgress()
+  showCard()
+}
+
+function markUnknown() {
+  const card = deck.getNextCard()
+  if (!card) return
+  deck.markUnknown(card.word)
+  showCard()
+}
+
+function resetDeck() {
+  deck.reset()
+  localStorage.removeItem(SAVE_KEY)
+  // Restore card UI in case we replaced it
+  cardEl.innerHTML = `
+    <div class="card-counter" id="card-counter"></div>
+    <div class="card-word" id="card-word"></div>
+    <div class="card-definition" id="card-definition"></div>
+    <div class="card-example" id="card-example"></div>
+  `
+  // Re-bind DOM refs after re-render
+  btnRow.style.display = 'flex'
+  // Re-assign after DOM replacement
+  Object.assign(window, {
+    cardCounter: document.getElementById('card-counter'),
+    cardWord:    document.getElementById('card-word'),
+    cardDef:     document.getElementById('card-definition'),
+    cardEx:      document.getElementById('card-example'),
+  })
+  showCard()
+}
+
+// ── Persist known words ──
+function saveProgress() {
+  localStorage.setItem(SAVE_KEY, JSON.stringify([...deck._known]))
+}
+
+// ── Events ──
+btnKnown.addEventListener('click', markKnown)
+btnUnknown.addEventListener('click', markUnknown)
+
+btnToggleList.addEventListener('click', () => {
+  wordList.classList.toggle('open')
+  btnToggleList.textContent = wordList.classList.contains('open')
+    ? '▴ \u00a0Hide word list'
+    : '▾ \u00a0Show all 100 words'
+  if (wordList.classList.contains('open')) renderWordList()
+})
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') markKnown()
+  if (e.key === 'ArrowLeft')  markUnknown()
+  if (e.key === 'r' || e.key === 'R') resetDeck()
+})
+
+// ── Boot ──
+showCard()
+</script>
+</body>
+</html>
