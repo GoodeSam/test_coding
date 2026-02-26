@@ -1,0 +1,49 @@
+name: Deploy to Tencent COS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'src/**'
+      - 'robots.txt'
+      - 'sitemap.xml'
+      - '.nojekyll'
+  workflow_dispatch:   # allow manual trigger from GitHub UI
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code (skip 540 MB audio files)
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            index.html
+            src
+            robots.txt
+            sitemap.xml
+            .nojekyll
+          sparse-checkout-cone-mode: false
+
+      - name: Install coscmd
+        run: pip install coscmd --quiet
+
+      - name: Configure coscmd
+        env:
+          SECRET_ID:  ${{ secrets.TENCENT_SECRET_ID }}
+          SECRET_KEY: ${{ secrets.TENCENT_SECRET_KEY }}
+          BUCKET:     ${{ secrets.COS_BUCKET }}
+          REGION:     ${{ secrets.COS_REGION }}
+        run: |
+          coscmd config \
+            -a "$SECRET_ID" \
+            -s "$SECRET_KEY" \
+            -b "$BUCKET" \
+            -r "$REGION"
+
+      - name: Sync code files to COS
+        run: |
+          # -r recursive  -s sync (skip unchanged files)  no --delete so audio stays
+          coscmd upload -rs ./ /
