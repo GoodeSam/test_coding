@@ -1,1 +1,6 @@
 node_modules/
+.DS_Store
+audio_files/*_combined.wav
+step1_progress.json
+*.pptx
+*.xlsx
