@@ -264,6 +264,20 @@
       letter-spacing: 0.04em;
     }
 
+    /* ── Mute button ── */
+    .btn-mute {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.3rem 0.6rem;
+      font-size: 1rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      line-height: 1;
+      transition: background 0.15s;
+    }
+    .btn-mute:hover { background: var(--border); }
+
     kbd {
       display: inline-block;
       background: var(--bg);
@@ -368,6 +382,7 @@
 <header>
   <div class="logo">土妹高考词汇<span> · 4509词</span></div>
   <div id="header-stat"></div>
+  <button class="btn-mute" id="btn-mute" title="静音 / 取消静音">🔊</button>
 </header>
 
 <div class="progress-wrap">
@@ -477,6 +492,41 @@ const btnToggleList = document.getElementById('btn-toggle-list')
 
 const SAVE_KEY = 'vocab-gaokao-known'
 
+// ── Audio ──
+const wordIndexMap = new Map(HIGH_FREQUENCY_WORDS.map((w, i) => [w.word, i]))
+let currentAudio   = null
+let muted          = false
+
+function audioPrefix(idx) {
+  return idx < 1000 ? String(idx).padStart(3, '0') : String(idx)
+}
+
+function playAudio(src) {
+  if (currentAudio) {
+    currentAudio.pause()
+    currentAudio.src = ''
+  }
+  if (muted) return
+  currentAudio = new Audio(src)
+  currentAudio.play().catch(() => {})
+}
+
+function playWordAudio(word, type) {
+  const idx = wordIndexMap.get(word)
+  if (idx === undefined) return
+  playAudio(`audio_files/${audioPrefix(idx)}_${type}.wav`)
+}
+
+const btnMute = document.getElementById('btn-mute')
+btnMute.addEventListener('click', () => {
+  muted = !muted
+  if (muted && currentAudio) {
+    currentAudio.pause()
+    currentAudio.src = ''
+  }
+  btnMute.textContent = muted ? '🔇' : '🔊'
+})
+
 // ── State ──
 let currentCard = null
 let revealed    = false
@@ -492,6 +542,8 @@ function reveal() {
   cardBodyEl.classList.remove('hidden')
   revealHintEl.classList.add('hidden')
   btnRow.classList.remove('locked')
+  // Play Chinese definition audio
+  playWordAudio(currentCard.word, 'cn')
 }
 
 // ── Show next card ──
@@ -529,6 +581,9 @@ function showCard() {
     btnRow.classList.add('locked')
 
     cardEl.classList.remove('flipping')
+
+    // Play English pronunciation
+    playWordAudio(c.word, 'en')
   }, 160)
 
   // Update progress UI immediately (outside animation)
