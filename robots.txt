@@ -1,0 +1,38 @@
+# robots.txt — https://goodesam.github.io/test_coding/
+
+# Allow all crawlers
+User-agent: *
+Allow: /
+Crawl-delay: 1
+
+# Baidu (web + image + video)
+User-agent: Baiduspider
+Allow: /
+Crawl-delay: 1
+
+User-agent: Baiduspider-image
+Allow: /
+
+User-agent: Baiduspider-video
+Allow: /
+
+# Sogou
+User-agent: Sogou web spider
+Allow: /
+
+User-agent: Sogouwebspider
+Allow: /
+
+# Qihoo 360
+User-agent: 360Spider
+Allow: /
+
+# Alibaba / SM.CN (Yisou)
+User-agent: YisouSpider
+Allow: /
+
+# Bing (used by some CN portals)
+User-agent: bingbot
+Allow: /
+
+Sitemap: https://goodesam.github.io/test_coding/sitemap.xml
